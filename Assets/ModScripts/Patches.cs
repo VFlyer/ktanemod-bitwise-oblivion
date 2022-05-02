@@ -58,7 +58,7 @@ namespace BitwiseOblivion
         }
         
         private static char cipher(char ch, int key) {  
-            if (!Letters.Contains(ch)) {
+            if (!Letters.Contains(char.ToUpper(ch))) {
                 return ch;  
             }  
   
