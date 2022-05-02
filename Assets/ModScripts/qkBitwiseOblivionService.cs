@@ -29,6 +29,7 @@ public class qkBitwiseOblivionService : MonoBehaviour
         if (!string.IsNullOrEmpty(fetch.error))
         {
             Debug.Log("[Bitwise Oblivion] Failed to fetch boss modules: " + fetch.error);
+            FetchRoutine = null;
             yield break;
         }
 

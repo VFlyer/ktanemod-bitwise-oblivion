@@ -64,7 +64,8 @@ public class qkBitwiseOblivion : KtaneModule
     protected override void Awake()
     {
         base.Awake();
-        Patcher.Patch();
+        if(EnableTwitchTriggers)
+            Patcher.Patch();
         Patcher.Modules.Clear();
     }
     
