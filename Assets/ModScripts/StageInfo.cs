@@ -65,7 +65,7 @@ namespace BitwiseOblivion
             var b2 = Encoding.UTF8.GetBytes(str2)[Index];
             Log("Character 1 UTF-8 byte (decimal): {0}", b1);
             Log("Character 2 UTF-8 byte (decimal): {0}", b2);
-            RecoverString = string.Format("{0}; {1}", b1, b2);
+            RecoverString = string.Format("{0} {1}", b1, b2);
             Solution = Operator(b1, b2);
             Log("Operation: {0}", OperatorName);
             Log("Solution: {0}", Solution);

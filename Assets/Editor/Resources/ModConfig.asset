@@ -14,8 +14,12 @@ MonoBehaviour:
   id: qkBitwiseOblivion
   title: Bitwise Oblivion
   author: Qkrisi
-  description: Bitwise Oblivion
+  description: "Yep, that's the noun for \"forget\"\n\nApply bitwise operations to
+    bytes for each stage\n\nTP supported \U0001F60F\U0001F60F\xAC\u203F\xAC\nTweaks
+    (Harmony) is required in order to use this module.\n\nManual: https://ktane.timwi.de/HTML/Bitwise%20Oblivion.html\nDefuser
+    difficulty: Medium\nExpert difficulty: Easy\n\nModule ID: qkBitwiseOblivion\nSoure
+    code: https://github.com/Qkrisi/ktanemod-bitwise-oblivion\nBackground texture
+    from Egyptian Fractions"
   version: 1.0
-  outputFolder: /home/qkrisi/.steam/steam/steamapps/common/Keep Talking and Nobody
-    Explodes/mods
+  outputFolder: build
   previewImage: {fileID: 2800000, guid: e6cb293ce524a470f85059702d3516c4, type: 3}
