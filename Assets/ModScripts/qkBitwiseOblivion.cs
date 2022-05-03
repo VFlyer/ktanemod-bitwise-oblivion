@@ -164,8 +164,8 @@ public class qkBitwiseOblivion : KtaneModule
             {
                 solved = true;
                 InputText.text = "GG!";
-                IndexText.text = "";
-                StageIndicator.text = "Module solved :D";
+                StageIndicator.text = "";
+                IndexText.text = "Module solved :D";
                 Log("Module solved!");
                 BombModule.HandlePass();
                 return false;
