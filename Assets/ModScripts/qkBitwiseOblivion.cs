@@ -36,10 +36,11 @@ public class qkBitwiseOblivion : KtaneModule
     private bool solved;
     private int Stage;
     
-    private const bool EnableTwitchTriggers = true;
+    private bool EnableTwitchTriggers = true;
     private const string Characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     
     private Coroutine QuestionMarksRoutine;
+    private BitwiseOblivionSettings bitOblivSettings = new BitwiseOblivionSettings();
 
     IEnumerator HandleQuestionMarks()
     {
@@ -64,6 +65,19 @@ public class qkBitwiseOblivion : KtaneModule
     protected override void Awake()
     {
         base.Awake();
+        try
+        {
+            ModConfig<BitwiseOblivionSettings> bitObFile = new ModConfig<BitwiseOblivionSettings>("BitwiseOblivionSettings");
+            bitOblivSettings = bitObFile.Settings;
+            bitObFile.Settings = bitOblivSettings;
+            EnableTwitchTriggers = bitOblivSettings.TPTriggersNextStage;
+        }
+        catch
+        {
+            Debug.LogWarning("<Bitwise Oblivion> Settings do not work as intended! Using default settings!");
+            EnableTwitchTriggers = true;
+        }
+
         if(EnableTwitchTriggers)
             Patcher.Patch();
         Patcher.Modules.Clear();
