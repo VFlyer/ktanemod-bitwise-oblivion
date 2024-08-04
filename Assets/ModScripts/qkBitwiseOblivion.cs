@@ -33,18 +33,18 @@ public class qkBitwiseOblivion : KtaneModule
     internal bool TwitchTriggers;
     private LinkedList<StageInfo> Stages = new LinkedList<StageInfo>();
     private LinkedListNode<StageInfo> CurrentStage;
-    private bool solved;
-    private int Stage;
+    private bool solved, readyToSolveAuto = false;
+    private int CurStage;
     
     private bool EnableTwitchTriggers = true;
-    private const string Characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    private const string Characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789", digits = "0123456789";
     
     private Coroutine QuestionMarksRoutine;
     private BitwiseOblivionSettings bitOblivSettings = new BitwiseOblivionSettings();
 
     IEnumerator HandleQuestionMarks()
     {
-        while (true)
+        while (!solved)
         {
             yield return new WaitForSeconds(1f);
             QuestionMarks++;
@@ -111,6 +111,7 @@ public class qkBitwiseOblivion : KtaneModule
             { 
                 if (solved) 
                     return;
+                readyToSolveAuto |= ReadyToSolve;
                 if (!TwitchTriggers && !ReadyToSolve) 
                     RecordStage(ModuleName, GetRandomString());
                 if (ReadyToSolve) 
@@ -129,8 +130,8 @@ public class qkBitwiseOblivion : KtaneModule
                     }
                     InputParent.SetActive(true); 
                     StringIndicator.gameObject.SetActive(true);
-                    IndexText.text = (CurrentStage.Value.Index + 1).ToString(); 
-                    Stage = 1; 
+                    IndexText.text = (CurrentStage.Value.Index + 1).ToString();
+                    CurStage = 1; 
                     StageIndicator.text = "1"; 
                     Log("Ready to solve.");
                     Log("Stage #1 solution: {0}", CurrentStage.Value.Solution);
@@ -186,8 +187,8 @@ public class qkBitwiseOblivion : KtaneModule
             }
             InputText.text = "";
             IndexText.text = (CurrentStage.Value.Index + 1).ToString();
-            StageIndicator.text = (++Stage).ToString();
-            Log("Stage #{0} solution: {1}", Stage, CurrentStage.Value.Solution);
+            StageIndicator.text = (++CurStage).ToString();
+            Log("Stage #{0} solution: {1}", CurStage, CurrentStage.Value.Solution);
             return false;
         }
         Log("Incorrect solution");
@@ -231,8 +232,8 @@ public class qkBitwiseOblivion : KtaneModule
         QuestionMarksText.gameObject.SetActive(false);
         StageIndicator.gameObject.SetActive(true);
         StageParent.SetActive(true);
-        StageIndicator.text = (++Stage).ToString();
-        Log("------Stage #{0}------", Stage);
+        StageIndicator.text = (++CurStage).ToString();
+        Log("------Stage #{0}------", CurStage);
         var stage = new StageInfo(str1, str2, LogOBJ);
         Log("------------");
         Stages.AddLast(stage);
@@ -256,8 +257,13 @@ public class qkBitwiseOblivion : KtaneModule
     IEnumerator ProcessTwitchCommand(string command)
     {
         command = command.Trim().ToLowerInvariant();
-        if (command == "back" && GoBackButton.gameObject.activeInHierarchy)
+        if (command == "back")
         {
+            if (!GoBackButton.gameObject.activeInHierarchy)
+            {
+                yield return "sendtochaterror You cannot go back right now. Are you still getting stages or submitting?";
+                yield break;
+            }
             yield return null;
             GoBackButton.OnInteract();
             yield break;
@@ -274,9 +280,32 @@ public class qkBitwiseOblivion : KtaneModule
                     InputButtons[character].OnInteract();
                 }
                 yield return null;
-                if(Submit(Input))
+                var lastStageCnt = CurStage;
+                SubmitButton.OnInteract();
+                if (lastStageCnt == CurStage)
                     yield break;
             }
+        }
+    }
+    IEnumerator TwitchHandleForcedSolve()
+    {
+        while (!readyToSolveAuto)
+            yield return true;
+        while (!solved)
+        {
+            if (GoBackButton.gameObject.activeInHierarchy)
+            {
+                GoBackButton.OnInteract();
+                yield return new WaitForSeconds(0.1f);
+            }
+            var curStageAnswer = Stages.ElementAt(CurStage - 1).Solution.ToString();
+            for (var x = 0; x < curStageAnswer.Length; x++)
+            {
+                InputButtons[curStageAnswer[x]].OnInteract();
+                yield return new WaitForSeconds(0.1f);
+            }
+            SubmitButton.OnInteract();
+            yield return new WaitForSeconds(0.1f);
         }
     }
 }
